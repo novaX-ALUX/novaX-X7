@@ -6,6 +6,11 @@ POT_CONFIG = {
         "P2": {"default": "POT_CENTER"},
         "P3": {"default": "MULTIPOS"}
     },
+    "novax-x7": {
+        "P1": {"default": "POT_CENTER"},
+        "P2": {"default": "POT_CENTER"},
+        "P3": {"default": "MULTIPOS"}
+    },
     "gx12": {
         "P1": {"default": "POT_CENTER"},
         "P2": {"default": "POT_CENTER"},

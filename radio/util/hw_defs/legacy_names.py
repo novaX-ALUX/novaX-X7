@@ -298,7 +298,7 @@ LEGACY_NAMES = [
         }
     },
     {
-        "targets": {"boxer"},
+        "targets": {"boxer", "novax-x7"},
         "inputs": {
             "LH": {
                 "yaml": "Rud",
