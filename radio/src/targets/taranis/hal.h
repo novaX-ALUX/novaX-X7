@@ -90,7 +90,7 @@
   #define KEYS_GPIO_PIN_LEFT            LL_GPIO_PIN_7 // PD.07
   #define KEYS_GPIO_REG_RIGHT           GPIOD
   #define KEYS_GPIO_PIN_RIGHT           LL_GPIO_PIN_3 // PD.03
-#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_GX12)
+#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_GX12)
 #if defined(RADIO_MT12)
   #define KEYS_GPIO_REG_PAGEUP          GPIOD
   #define KEYS_GPIO_PIN_PAGEUP          LL_GPIO_PIN_7  // PD.07
@@ -109,7 +109,7 @@
   #define KEYS_GPIO_REG_EXIT            GPIOC
   #define KEYS_GPIO_PIN_EXIT            LL_GPIO_PIN_5  // PC.05
 #endif
-#if defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_MT12) || defined(RADIO_GX12)
+#if defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_MT12) || defined(RADIO_GX12)
   #define KEYS_GPIO_REG_ENTER           GPIOA
   #define KEYS_GPIO_PIN_ENTER           LL_GPIO_PIN_10 // PA.10
 #else
@@ -320,7 +320,7 @@
     #define USE_EXTI15_10_IRQ
     #define EXTI15_10_IRQ_Priority 5
   #endif
-#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_T14) || defined(RADIO_T12MAX)  || defined(RADIO_TPROS) || defined(RADIO_V14) || defined(RADIO_V12) || defined(RADIO_GX12)
+#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_T14) || defined(RADIO_T12MAX)  || defined(RADIO_TPROS) || defined(RADIO_V14) || defined(RADIO_V12) || defined(RADIO_GX12)
   #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO              GPIOE
   #define ROTARY_ENCODER_GPIO_PIN_A        LL_GPIO_PIN_9 // PE.9
@@ -341,7 +341,7 @@
     #define USE_EXTI15_10_IRQ
     #define EXTI15_10_IRQ_Priority 5
   #endif
-  #if defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_T14) || defined(RADIO_TPROS) || defined(RADIO_V14) || defined(RADIO_V12)
+  #if defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_ZORRO) || defined(RADIO_MT12) || defined(RADIO_POCKET) || defined(RADIO_T14) || defined(RADIO_TPROS) || defined(RADIO_V14) || defined(RADIO_V12)
     #define ROTARY_ENCODER_INVERTED
   #endif
 #endif
@@ -640,7 +640,7 @@
   #define SWITCHES_GPIO_PIN_A_H         LL_GPIO_PIN_1  // PE.01
   #define SWITCHES_GPIO_REG_A_L         GPIOE
   #define SWITCHES_GPIO_PIN_A_L         LL_GPIO_PIN_0  // PE.00
-#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_ZORRO) || defined(RADIO_POCKET)
+#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_ZORRO) || defined(RADIO_POCKET)
   #define SWITCHES_GPIO_REG_A           GPIOC
   #define SWITCHES_GPIO_PIN_A           LL_GPIO_PIN_13  // PC.13
 #elif defined(RADIO_GX12)
@@ -734,7 +734,7 @@
   #define SWITCHES_GPIO_PIN_B_L         LL_GPIO_PIN_15  // PE.15
   #define SWITCHES_GPIO_REG_B_H         GPIOA
   #define SWITCHES_GPIO_PIN_B_H         LL_GPIO_PIN_5   // PA.05
-#elif defined(RADIO_BOXER)
+#elif defined(RADIO_BOXER) || defined(RADIO_YOWELVU)
   #define SWITCHES_GPIO_REG_B_L         GPIOE
   #define SWITCHES_GPIO_PIN_B_L         LL_GPIO_PIN_15  // PE.15
   #define SWITCHES_GPIO_REG_B_H         GPIOE
@@ -776,7 +776,7 @@
   #define SWITCHES_GPIO_PIN_C_L         LL_GPIO_PIN_2  // PE.02
   #define SWITCHES_GPIO_REG_C_H         GPIOE
   #define SWITCHES_GPIO_PIN_C_H         LL_GPIO_PIN_3  // PE.03
-#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER)
+#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU)
   #define SWITCHES_GPIO_REG_C_L         GPIOE
   #define SWITCHES_GPIO_PIN_C_L         LL_GPIO_PIN_0   // PE.00
   #define SWITCHES_GPIO_REG_C_H         GPIOD
@@ -865,7 +865,7 @@
 #elif defined(RADIO_COMMANDO8)
   #define SWITCHES_GPIO_REG_D           GPIOA
   #define SWITCHES_GPIO_PIN_D           LL_GPIO_PIN_5  // PA.05
-#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_ZORRO) || defined(RADIO_POCKET)
+#elif defined(RADIO_TX12) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_ZORRO) || defined(RADIO_POCKET)
   #define SWITCHES_GPIO_REG_D           GPIOE
   #define SWITCHES_GPIO_PIN_D           LL_GPIO_PIN_8  // PE.08
 #elif defined(RADIO_TLITE) || defined(RADIO_TPRO) || defined(RADIO_TPROV2) || defined(RADIO_LR3PRO)
@@ -933,7 +933,7 @@
 #elif defined(RADIO_ZORRO) || defined(RADIO_POCKET)
   #define SWITCHES_GPIO_REG_E           GPIOE
   #define SWITCHES_GPIO_PIN_E           LL_GPIO_PIN_7  // PE.07
-#elif defined(RADIO_BOXER)
+#elif defined(RADIO_BOXER) || defined(RADIO_YOWELVU)
   #define SWITCHES_GPIO_REG_E           GPIOE
   #define SWITCHES_GPIO_PIN_E           LL_GPIO_PIN_14 // PE.14
 #elif defined(RADIO_TX12)
@@ -992,7 +992,7 @@
   #define SWITCHES_GPIO_PIN_F           LL_GPIO_PIN_3 // PC.03
 #elif defined(PCBX9LITE)
 // no SWF
-#elif defined(RADIO_ZORRO) || defined(RADIO_BOXER)
+#elif defined(RADIO_ZORRO) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU)
   #define SWITCHES_GPIO_REG_F           GPIOE
   #define SWITCHES_GPIO_PIN_F           LL_GPIO_PIN_1 // PE.01
 #elif defined(RADIO_TX12)
@@ -1052,7 +1052,7 @@
 #elif defined(RADIO_T12) || defined(RADIO_ZORRO)
   #define SWITCHES_GPIO_REG_G           GPIOE
   #define SWITCHES_GPIO_PIN_G           LL_GPIO_PIN_14 // PE.14
-#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_V14) || defined(RADIO_V12)
+#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_V14) || defined(RADIO_V12)
 #elif defined(RADIO_TPROV2)
   #define SWITCHES_GPIO_REG_G           GPIOG
   #define SWITCHES_GPIO_PIN_G           LL_GPIO_PIN_10 // PG.10
@@ -1090,7 +1090,7 @@
 #elif defined(RADIO_T8) || defined(RADIO_COMMANDO8)
   // no SWH
 #elif defined(RADIO_TX12) || defined(RADIO_MT12)
-#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_V14) || defined(RADIO_V12)
+#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_V14) || defined(RADIO_V12)
 #elif defined(RADIO_TPROV2)
   #define SWITCHES_GPIO_REG_H           GPIOG
   #define SWITCHES_GPIO_PIN_H           LL_GPIO_PIN_9 // PG.09
@@ -1135,7 +1135,7 @@
   #define SWITCHES_GPIO_PIN_I           LL_GPIO_PIN_14  // PE.14
   #define SWITCHES_GPIO_REG_J           GPIOD
   #define SWITCHES_GPIO_PIN_J           LL_GPIO_PIN_14  // PD.14
-#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_MT12) || defined(RADIO_V14) || defined(RADIO_V12)
+#elif defined(RADIO_TX12MK2) || defined(RADIO_BOXER) || defined(RADIO_YOWELVU) || defined(RADIO_MT12) || defined(RADIO_V14) || defined(RADIO_V12)
   // no headers
 #elif defined(RADIO_TLITE) || defined(RADIO_LR3PRO)
   // no SWI
