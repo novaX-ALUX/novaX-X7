@@ -29,6 +29,10 @@
   #define USB_NAME                     "Radiomaster Boxer"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'R', 'M', ' ', 'B', 'o', 'x', 'e', 'r'  /* 8 Bytes */
+#elif defined(RADIO_YOWELVU)
+  #define USB_NAME                     "YOWELVU"
+  #define USB_MANUFACTURER             'Y', 'O', 'W', 'E', 'L', 'V', 'U', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'Y', 'O', 'W', 'E', 'L', 'V', 'U', ' '  /* 8 Bytes */
 #elif defined(RADIO_ZORRO)
   #define USB_NAME                     "Radiomaster Zorro"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
