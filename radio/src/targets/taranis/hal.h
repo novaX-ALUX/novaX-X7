@@ -1872,7 +1872,7 @@
   #define ADC_DIRECTION {1,-1,-1,1,  -1,1,  1,  1}
 #endif
 
-#if defined(RADIO_BOXER)
+#if defined(RADIO_BOXER) || defined(RADIO_NOVAX_X7)
   #define DEFAULT_6POS_CALIB          {5, 13, 22, 31, 40}
   #define DEFAULT_6POS_IDX            6
 #endif
