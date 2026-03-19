@@ -2532,6 +2532,8 @@
 #endif
 
 // USB
+// NOTE: novaX-X7 has PA9 routed to BOOT0 (not USB VBUS), reads low = never detects USB plug.
+// USB connection works via manual DFU entry or software detection on PD1.
 #define USB_GPIO_VBUS                   GPIO_PIN(GPIOA, 9)  // PA.09
 #define USB_GPIO_DM                     GPIO_PIN(GPIOA, 11) // PA.11
 #define USB_GPIO_DP                     GPIO_PIN(GPIOA, 12) // PA.12
@@ -2750,8 +2752,8 @@
 #endif
 
 // SD - SPI2
-#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_TPROS) || defined(RADIO_BUMBLEBEE) || defined(RADIO_GX12)
-  // Using chip, so no detect
+#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_TPROS) || defined(RADIO_BUMBLEBEE) || defined(RADIO_GX12) || defined(RADIO_NOVAX_X7)
+  // No SD card detect (novaX-X7: PD9 is NC)
 #else
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define SD_PRESENT_GPIO           GPIO_PIN(GPIOD, 10) // PD.10
