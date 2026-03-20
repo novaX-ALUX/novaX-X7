@@ -118,6 +118,8 @@ void backlightInit()
 #endif
   BACKLIGHT_TIMER->ARR = 100;
   BACKLIGHT_TIMER->PSC = BACKLIGHT_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
+  // TODO novaX-X7: backlight flickers at brightness 100, may be FPC cable issue
+  // Tried 10kHz (PSC = BACKLIGHT_TIMER_FREQ / 1000000 - 1) - needs further testing
   #if defined(BACKLIGHT_CCMR1)
     BACKLIGHT_TIMER->CCMR1 = BACKLIGHT_CCMR1;
   #elif defined(BACKLIGHT_CCMR2)
