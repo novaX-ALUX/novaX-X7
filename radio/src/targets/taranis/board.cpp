@@ -162,6 +162,13 @@ void boardInit()
 
   // Sets 'hardwareOption.pcbrev' as well
   pwrInit();
+
+#if defined(RADIO_NOVAX_X7)
+  // Turn on LCD backlight immediately (PD13 drives Q6 for backlight)
+  gpio_init(BACKLIGHT_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
+  gpio_set(BACKLIGHT_GPIO);
+#endif
+
   boardInitModulePorts();
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(PXX_FREQUENCY_HIGH)
