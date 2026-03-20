@@ -2635,9 +2635,9 @@
 #elif defined(RADIO_NOVAX_X7)
   #define LCD_MOSI_GPIO                 GPIO_PIN(GPIOC, 12) // PC.12
   #define LCD_CLK_GPIO                  GPIO_PIN(GPIOC, 10) // PC.10
-  #define LCD_A0_GPIO                   GPIO_PIN(GPIOD, 12) // PD.12 (FPC pin3 A0/DC)
+  #define LCD_A0_GPIO                   GPIO_PIN(GPIOC, 11) // PC.11 (try Boxer original)
   #define LCD_NCS_GPIO                  GPIO_PIN(GPIOA, 15) // PA.15
-  #define LCD_RST_GPIO                  GPIO_PIN(GPIOC, 11) // PC.11 (FPC pin10 RST)
+  #define LCD_RST_GPIO                  GPIO_PIN(GPIOD, 12) // PD.12 (try Boxer original)
   #define LCD_DMA                       DMA1
   #define LCD_DMA_Stream                DMA1_Stream7
   #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
