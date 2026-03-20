@@ -1420,7 +1420,7 @@ void edgeTxInit()
     if (!sdMounted())
       sdInit();
 
-#if !defined(COLORLCD)
+#if !defined(COLORLCD) && !defined(RADIO_NOVAX_X7)
     if (!sdMounted()) {
       g_eeGeneral.pwrOffSpeed = 2;
       runFatalErrorScreen(STR_NO_SDCARD);

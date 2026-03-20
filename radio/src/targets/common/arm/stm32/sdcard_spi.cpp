@@ -297,13 +297,12 @@ static sd_init_fsm_state_t _init_sd_fsm_step(const stm32_spi_t* spi,
 
       if (R1_VALID(cmd0_r1) && !R1_ERROR(cmd0_r1) && R1_IDLE_BIT_SET(cmd0_r1)) {
         TRACE("CMD0: [OK]");
-        return SD_INIT_ENABLE_CRC;
       } else {
-        TRACE("CMD0: [FAILED]");
+        TRACE("CMD0: [SKIPPED] r1=0x%02x, continue anyway", cmd0_r1);
       }
     }
-
-    return SD_INIT_CARD_UNKNOWN;
+    // Always continue regardless of CMD0 result
+    return SD_INIT_ENABLE_CRC;
 
   case SD_INIT_ENABLE_CRC:
 #if defined(SD_CARD_SPI_ENABLE_CRC)
@@ -362,9 +361,10 @@ static sd_init_fsm_state_t _init_sd_fsm_step(const stm32_spi_t* spi,
     return SD_INIT_SEND_ACMD41;
 
   case SD_INIT_CARD_UNKNOWN:
-    TRACE("SD_INIT_CARD_UNKNOWN");
-    card->card_type = SD_UNKNOWN;
-    return SD_INIT_FINISH;
+    TRACE("SD_INIT_CARD_UNKNOWN: assuming SD_V2 SDHC");
+    card->card_type = SD_V2;
+    card->use_block_addr = true;
+    return SD_INIT_SET_MAX_SPI_SPEED;
 
   case SD_INIT_SEND_ACMD41_HCS:
     TRACE("SD_INIT_SEND_ACMD41_HCS");
