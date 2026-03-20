@@ -37,6 +37,8 @@
 
 #if defined(OLED_SCREEN)
   #define LCD_CONTRAST_OFFSET            0
+#elif defined(RADIO_NOVAX_X7)
+  #define LCD_CONTRAST_OFFSET            10
 #elif defined(RADIO_FAMILY_JUMPER_T12) || defined(MANUFACTURER_RADIOMASTER) || defined(RADIO_COMMANDO8) || defined(RADIO_TPRO) || defined(RADIO_T12MAX) || defined(RADIO_V12) || defined(RADIO_V14)
   #define LCD_CONTRAST_OFFSET            -10
 #else
@@ -176,16 +178,23 @@ void lcdStart()
     lcdWriteCommand(0xe2); // (14) Soft reset
 #if defined(LCD_HORIZONTAL_INVERT)
     lcdWriteCommand(0xa1); // Set seg
-#else 
+#else
     lcdWriteCommand(0xa0); // Set seg
 #endif
     lcdWriteCommand(0xc8); // Set com
     lcdWriteCommand(0xf8); // Set booster
     lcdWriteCommand(0x00); // 5x
+#if defined(RADIO_NOVAX_X7)
+    lcdWriteCommand(0xa2); // Set bias=1/9
+    lcdWriteCommand(0x23); // Set internal rb/ra=5.5
+    lcdWriteCommand(0x2f); // All built-in power circuits on
+    lcdWriteCommand(0x27); // Power control set (~9V)
+#else
     lcdWriteCommand(0xa3); // Set bias=1/6
     lcdWriteCommand(0x22); // Set internal rb/ra=5.0
     lcdWriteCommand(0x2f); // All built-in power circuits on
     lcdWriteCommand(0x24); // Power control set
+#endif
     lcdWriteCommand(0x81); // Set contrast
     lcdWriteCommand(0x0A); // Set Vop
     lcdWriteCommand(0xa6); // Set display mode
