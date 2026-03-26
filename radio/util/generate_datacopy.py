@@ -102,6 +102,15 @@ def main():
     if find_clang.builtin_hdr_path:
         args.append("-I" + find_clang.builtin_hdr_path)
 
+    # Add C++ standard library include paths for libclang on Linux
+    if sys.platform.startswith("linux"):
+        import glob
+        for pattern in ["/usr/include/c++/*", "/usr/include/x86_64-linux-gnu/c++/*"]:
+            for p in sorted(glob.glob(pattern), reverse=True):
+                if os.path.isdir(p):
+                    args.append("-isystem" + p)
+                    break
+
     translation_unit = index.parse(sys.argv[1], args)
 
     if translation_unit.diagnostics:
