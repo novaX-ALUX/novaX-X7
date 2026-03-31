@@ -1,0 +1,142 @@
+novaX-X7 (YOWELVU PCB) Pin Map — STM32F407VGT6
+All Confirmed — 2026-03-19
+
+== ADC (Sticks) ==
+PA0  pin23  ADC1_IN0   Stick_R Y    J1 pin4 → R4(51R) → C6(1nF)
+PA1  pin24  ADC1_IN1   Stick_R X    J1 pin1 → R5(51R) → C8(1nF)
+PA2  pin25  ADC1_IN2   Stick_L Y    J37 pin4 → R132(51R) → C127(1nF)
+PA3  pin26  ADC1_IN3   Stick_L X    J37 pin1 → R134(51R) → C128(1nF)
+
+== ADC (Pots / Battery) ==
+PA5  pin30  ADC1_IN5   6-way switch analog encoding (STC15 resistor ladder, SW5/7/10/12/15/17)
+PA6  pin31  ADC1_IN6   Trim slider S2 (10K pot, VREF+/-)
+PB0  pin35  ADC1_IN8   Trim slider S1 (10K pot, symmetric with S2)
+PC0  pin15  ADC1_IN10  Battery voltage (R82 499K / R83 160K divider, ratio 0.243)
+
+== Audio / Trainer ==
+PA4  pin29  ADC1_IN4   Trainer PPM input (J8 PJ-393 → AD8002D buffer)
+PA8  pin67  TIM1_CH1   Trainer PPM input (J30 HC-PJ-313D, R109 100K pullup)
+PE12 pin43  GPIO_OUT   AD8002D shutdown control (R69 1K, audio mute)
+
+== USB ==
+PA11 pin70  USB_DM     Type-C D- (R44 22R, U7 SR05.TCT ESD)
+PA12 pin71  USB_DP     Type-C D+ (R45 22R, U7 SR05.TCT ESD)
+PA9  pin68  GPIO_OUT   Software BOOT0 control (R77 10K → BOOT0 node; NOT USB_VBUS)
+
+== SWD Debug ==
+PA13 pin72  SWDIO      J27 SWD pin10
+PA14 pin76  SWDCLK     J27 SWD pin8, R129 10K pulldown
+
+== LCD (SPI3 → J20 FPC) ==
+PA15 pin77  SPI3_NSS   LCD CS       FPC pin1
+PC10 pin78  SPI3_SCK   LCD SCL      FPC pin4 (D6)
+PC12 pin80  SPI3_MOSI  LCD SDA      FPC pin5 (D7)
+PC11 pin79  GPIO_OUT   LCD RST      FPC pin2     (NOTE: Boxer has A0 here)
+PD12 pin59  GPIO_OUT   LCD A0/DC    FPC pin3     (NOTE: Boxer has RST here)
+PD13 pin60  GPIO_OUT   LCD backlight (Q6 SS8050 → J14 2-pin MX1.25)
+
+== SD Card (SPI2 → J16 XKTF-1307-16) ==
+PB12 pin51  SPI2_NSS   SD CS   (R40 33R)
+PB13 pin52  SPI2_SCK   SD CLK  (R39 33R)
+PB14 pin53  SPI2_MISO  SD DAT0 (R41 33R)
+PB15 pin54  SPI2_MOSI  SD CMD  (R43 33R)
+
+== I2C EEPROM (M24256, 256Kbit) ==
+PB8  pin95  I2C1_SCL   U14 SCL pin6 (R95 4.7K pullup)
+PB9  pin96  I2C1_SDA   U14 SDA pin5 (R95 4.7K pullup)
+PD10 pin57  GPIO_OUT   U14 WC# pin7 (write protect, active low)
+
+== Internal RF Module (J10 ZX-MX1.25-5PLT) ==
+PC4  pin33  UART       RF power/signal (Q3 SS8050 → AO3407 MOSFET)
+PB1  pin36  GPIO       RF boot/reset (R58 2.2K → Q5 SS8050)
+PB6  pin92  GPIO_IN    J10 RF PORT pin3 (USART1_TX)
+PB7  pin93  GPIO_IN    J10 RF PORT pin2 (USART1_RX)
+
+== External Module ==
+PD8  pin55  GPIO_OUT   Power control (Q7 SS8050 → Q9 AO3407 → F3 fuse → J27 pin3)
+PC6  pin63  GPIO_OUT   TX via SN74LVC1G04 inverter (S.Bus/CRSF)
+PC7  pin64  GPIO_OUT   RX via SN74LVC1G04 inverter
+
+== S.Bus/F.Port (USART2 + half-duplex) ==
+PD4  pin85  GPIO_OUT   U10 SN74LVC1G126 OE# (TX enable, active low)
+PD5  pin86  USART2_TX  TX → U9 inverter → U10 tri-state
+PD6  pin87  USART2_RX  RX ← U11 inverter (R80 10K pullup)
+
+== BLE Bluetooth (USART3 → J36) ==
+PB10 pin47  USART3_TX  J36 HC-1.25-4PWT pin2
+PB11 pin48  USART3_RX  J36 HC-1.25-4PWT pin3
+
+== LEDs ==
+PA7  pin32  GPIO_OUT   LED4C RGB direct drive (R66 220R)
+PE2  pin1   GPIO_OUT   LED4A RGB direct drive (R64 220R)
+PE13 pin44  GPIO_OUT   LED4B RGB direct drive (D8 1N4148W isolation, R65 220R)
+PB5  pin91  GPIO_OUT   LED4B via Q8 SS8050 + IP2326 charge status
+
+== Keys ==
+PA10 pin69  GPIO_IN    ENTER   (SW3, R6 220R, C9 100nF)
+PB4  pin90  GPIO_IN    PAGE #1 (SW23, R133 220R, C126 100nF)
+PD2  pin83  GPIO_IN    TELE    (SW19, R127 220R, C121 100nF)
+PD3  pin84  GPIO_IN    PAGE #2 (SW20, R130 220R, C124 100nF)
+PD7  pin88  GPIO_IN    PAGE #3 (SW21, R131 220R, C125 100nF)
+PE11 pin42  GPIO_IN    MDL     (SW2, R3 220R, C4 100nF)
+
+== Switches (toggle / function) ==
+PC13 pin7   GPIO_IN    Power switch SW1 (shared with PE14)
+PE14 pin45  GPIO_IN    Power switch SW1 (shared with PC13)
+PE1  pin98  GPIO_IN    Function key J2 "F" pin2 (shared with PE8)
+PE8  pin39  GPIO_IN    Function key J2 "F" (shared with PE1)
+PC5  pin34  GPIO_IN    RTIV switch (SW22, right throttle)
+
+== Trim Direction Switches (8 way) ==
+PC1  pin16  GPIO_IN    LHR - Left Horizontal Right  (SW16)
+PC2  pin17  GPIO_IN    RVU - Right Vertical Up      (SW9)
+PC3  pin18  GPIO_IN    RVD - Right Vertical Down    (SW8)
+PD15 pin62  GPIO_IN    LHL - Left Horizontal Left   (SW18)
+PE3  pin2   GPIO_IN    RHL - Right Horizontal Left  (SW6)
+PE4  pin3   GPIO_IN    RHR - Right Horizontal Right (SW4)
+PE5  pin4   GPIO_IN    LVU - Left Vertical Up       (SW14)
+PE6  pin5   GPIO_IN    LVD - Left Vertical Down     (SW13)
+
+== External Connectors (with TVS protection) ==
+PE7  pin38  GPIO_IN    J29 "B" pin1 (D15 TVS)
+PE15 pin46  GPIO_IN    J29 "B" pin3 (D16 TVS)
+PE0  pin97  GPIO_IN    J11 "C" pin3 (D4 TVS)
+PD11 pin58  GPIO_IN    J11 "C" pin1 (D3 TVS)
+
+== Trainer Jack Detect ==
+PC8  pin65  GPIO_IN    Detect input (R88 10K pullup, Q10 open collector)
+PC9  pin66  GPIO_OUT   Q10 base driver (R87 2K)
+
+== Power ==
+PD0  pin81  GPIO_OUT   Main power MOSFET (Q4 SS8050 → U2 P-MOS gate)
+PD1  pin82  ADC        USB/power status (R24 4.7K / R25 47K, D6/D7 OR diodes)
+
+== Haptic ==
+PB3  pin89  GPIO_OUT   Vibration motor (R1 2.2K → Q1 SS8050 → M1, D1 flyback)
+PB2  pin37  GPIO_OUT   BOOT1 pulldown (R75 10K); motor control after boot
+
+== Rotary Encoder (ALPS J38) ==
+PE9  pin40  TIM1_CH1   Encoder A phase
+PE10 pin41  TIM1_CH2   Encoder B phase
+
+== Unused ==
+PD9  pin56  GPIO       NC (R36 10K pulldown only)
+PD14 pin61  GPIO       NC (marked x in schematic)
+
+== System ==
+NRST  pin14   Reset (R128 10K pullup, C83 100nF, J27 SWD pin1)
+BOOT0 pin94   R27 1K pulldown; SW11 manual, PA9 software
+PH0/1 pin12/13 HSE crystal Y1 (C89/C92 10pF)
+PC14  pin8    OSC32_IN  RTC crystal Y2 32.768kHz
+PC15  pin9    OSC32_OUT RTC crystal Y2
+VREF+ pin21   Isolated analog ref (S1/S2 → L7 ferrite → C80/C81)
+VCAP1 pin49   2.2uF → GND
+VCAP2 pin73   2.2uF → GND
+PDR   pin99   Tied to VDD
+
+== Key Differences from Boxer hal.h ==
+1. Sticks: ADC pots (PA0-PA3), NOT Flysky Hall serial
+2. I2C1: PB8/PB9 (not PB6/PB7)
+3. LCD: A0=PD12, RST=PC11 (Boxer has A0=PC11, RST=PD12 — SWAPPED)
+4. PA9: Software BOOT0 control (Boxer: USB_VBUS)
+5. No SD card detect pin (PD9 is NC)

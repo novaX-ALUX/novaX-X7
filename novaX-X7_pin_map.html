@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STM32F407VGT6 引脚映射表 v4.0 — YOWELVU PCB</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+  :root{
+    --bg:#0d1117;--surf:#161b22;--bdr:#21262d;--acc:#58a6ff;
+    --tx:#e6edf3;--txd:#8b949e;--rhov:#1c2128;
+    --cbg:#0d2b14;--cc:#3fb950;--cbr:#1e5128;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tx);padding:28px 20px;}
+  header{margin-bottom:16px;border-left:3px solid var(--acc);padding-left:14px;}
+  header h1{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:var(--acc);}
+  header p{font-size:12px;color:var(--txd);margin-top:4px;line-height:1.6;}
+  .vb{display:inline-block;margin-left:8px;padding:1px 7px;background:#1a2e3a;border:1px solid #2a5a7a;border-radius:3px;font-size:10px;color:#58a6ff;font-family:'IBM Plex Mono',monospace;vertical-align:middle;}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center;}
+  .si{background:var(--surf);border:1px solid var(--bdr);border-radius:5px;padding:7px 11px;color:var(--tx);font-family:'IBM Plex Mono',monospace;font-size:13px;width:220px;outline:none;transition:border-color .2s;}
+  .si:focus{border-color:var(--acc);}
+  .si::placeholder{color:var(--txd);}
+  .fg{display:flex;gap:5px;flex-wrap:wrap;}
+  .fb{background:var(--surf);border:1px solid var(--bdr);border-radius:4px;padding:5px 10px;font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s;color:var(--txd);}
+  .fb:hover{border-color:var(--acc);color:var(--acc);}
+  .fb.a-all{background:#1a2d3a;border-color:#58a6ff;color:#58a6ff;}
+  .fb.a-con{background:var(--cbg);border-color:var(--cc);color:var(--cc);}
+  .fb.a-prt{background:#1a2030;border-color:var(--acc);color:var(--acc);}
+  .cnt{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--txd);align-self:center;}
+  .cnt span{color:var(--acc);}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+  .stat{background:var(--surf);border:1px solid var(--bdr);border-radius:5px;padding:7px 13px;font-size:12px;display:flex;align-items:center;gap:7px;}
+  .sn{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;}
+  .sl{color:var(--txd);}
+  .tw{overflow-x:auto;border-radius:7px;border:1px solid var(--bdr);}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead{background:var(--surf);position:sticky;top:0;z-index:10;}
+  th{padding:9px 12px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--txd);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--bdr);white-space:nowrap;}
+  th .sub{font-size:9px;color:#4a6a4a;font-weight:400;display:block;margin-top:2px;letter-spacing:0;text-transform:none;}
+  tbody tr{border-bottom:1px solid var(--bdr);transition:background .1s;}
+  tbody tr:hover:not(.sd){background:var(--rhov);}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:8px 12px;vertical-align:top;}
+  .pn{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--txd);white-space:nowrap;}
+  .gn{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;white-space:nowrap;}
+  .PA{color:#58a6ff;}.PB{color:#3fb950;}.PC{color:#d2a8ff;}.PD{color:#ffa657;}.PE{color:#ff7b72;}.SYS{color:#8b949e;}
+  .ft{display:inline-block;padding:2px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;white-space:nowrap;margin-bottom:2px;}
+  .ADC{background:#1a2e1a;color:#3fb950;border:1px solid #2a5a2a;}
+  .SPI{background:#1a1a3a;color:#7b9ff5;border:1px solid #2a2a6a;}
+  .UART{background:#2a1a0a;color:#ffa657;border:1px solid #5a3a1a;}
+  .I2C{background:#2a1a3a;color:#d2a8ff;border:1px solid #5a3a7a;}
+  .USB{background:#1a2a2a;color:#56d3db;border:1px solid #2a5a6a;}
+  .SWD{background:#2a2a0a;color:#e3b341;border:1px solid #5a5a1a;}
+  .GPIO{background:#1a1a1a;color:#8b949e;border:1px solid #2a2a2a;}
+  .TIM{background:#2a1a2a;color:#f0a0f0;border:1px solid #5a3a5a;}
+  .PWR{background:#2a1a1a;color:#ff7b72;border:1px solid #5a2a2a;}
+  .OSC{background:#1a2a1a;color:#79c0ff;border:1px solid #1a4a4a;}
+  .nc-cell{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#adbac7;line-height:1.6;max-width:240px;white-space:normal;}
+  .fc-cell{font-size:12px;line-height:1.6;max-width:260px;white-space:normal;color:var(--tx);}
+  .sb{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;white-space:nowrap;}
+  .sb::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+  .sc{background:var(--cbg);color:var(--cc);border:1px solid var(--cbr);}  .sc::before{background:var(--cc);}
+  .sd{background:#13171e!important;}
+  .sd td{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--txd);letter-spacing:.12em;padding:5px 12px;border-top:1px solid var(--bdr);font-weight:600;text-transform:uppercase;}
+  .hidden{display:none!important;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid var(--bdr);font-size:12px;}
+  .li{display:flex;align-items:center;gap:7px;color:var(--txd);}
+</style>
+</head>
+<body>
+<header>
+  <h1>STM32F407VGT6 · 引脚映射表 <span class="vb">v4.0</span></h1>
+  <p>YOWELVU PCB · EdgeTX Radiomaster Boxer · 2026-03-19<br>
+  经原理图 PDF 逐行核查 + 截图逐项验证 · 所有引脚已确认</p>
+</header>
+
+<div class="controls">
+  <input class="si" id="si" type="text" placeholder="搜索引脚 / 功能 / 器件...">
+  <div class="fg">
+    <button class="fb a-all" data-f="ALL">全部</button>
+    <button class="fb" data-f="CONFIRMED">● Confirmed</button>
+    <button class="fb" data-f="PA">PA</button>
+    <button class="fb" data-f="PB">PB</button>
+    <button class="fb" data-f="PC">PC</button>
+    <button class="fb" data-f="PD">PD</button>
+    <button class="fb" data-f="PE">PE</button>
+    <button class="fb" data-f="SYS">SYS</button>
+  </div>
+  <span class="cnt">显示 <span id="rc">--</span> 行</span>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="sn" style="color:#3fb950" id="cc">0</span><span class="sl">Confirmed</span></div>
+</div>
+
+<div class="tw"><table><thead><tr>
+  <th style="width:48px">引脚号</th>
+  <th style="width:72px">GPIO</th>
+  <th style="width:104px">外设复用<span class="sub">MCU能力</span></th>
+  <th>原理图网络连接</th>
+  <th>功能描述</th>
+  <th style="width:108px">状态</th>
+</tr></thead>
+<tbody id="tb">
+
+<!-- ═══ PA ═══ -->
+<tr class="sd" data-port="PA"><td colspan="6">PA PORT — 摇杆 · ADC · Trainer · USB · SWD</td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">23</td><td class="gn PA">PA0</td><td><span class="ft ADC">ADC1_IN0</span></td><td class="nc-cell">J1(STICK_R) pin4 → R4(51R) → TP6 → PA0<br>C6(1NF) 滤波到 VREF-</td><td class="fc-cell">右摇杆 Y 轴模拟量采集（差分参考 VREF±）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">24</td><td class="gn PA">PA1</td><td><span class="ft ADC">ADC1_IN1</span></td><td class="nc-cell">J1(STICK_R) pin1 → R5(51R) → TP7 → PA1<br>C8(1NF) 滤波到 VREF-</td><td class="fc-cell">右摇杆 X 轴模拟量采集</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">25</td><td class="gn PA">PA2</td><td><span class="ft ADC">ADC1_IN2</span></td><td class="nc-cell">J37(STICK_L) pin4 → R132(51R) → TP56 → PA2<br>C127(1NF) 滤波到 VREF-</td><td class="fc-cell">左摇杆 Y 轴模拟量采集</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">26</td><td class="gn PA">PA3</td><td><span class="ft ADC">ADC1_IN3</span></td><td class="nc-cell">J37(STICK_L) pin1 → R134(51R) → TP54 → PA3<br>C128(1NF) 滤波到 VREF-</td><td class="fc-cell">左摇杆 X 轴模拟量采集</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">29</td><td class="gn PA">PA4</td><td><span class="ft ADC">ADC1_IN4</span></td><td class="nc-cell">J8(PJ-393 trainer口) → AD8002D(-IN) → R67(15K) → C63(390NF) → PA4</td><td class="fc-cell">Trainer 口（J8）PPM 信号模拟输入，AD8002D 缓冲</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">30</td><td class="gn PA">PA5</td><td><span class="ft ADC">ADC1_IN5</span></td><td class="nc-cell">PA5 → R114(10K)/R115(10K) → SW5/7/10/12/15/17 开关公共节点<br>C110/C111(100NF) 滤波</td><td class="fc-cell">STC15 六路拨动开关模拟编码 ADC 输入（电阻梯形分压）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">31</td><td class="gn PA">PA6</td><td><span class="ft ADC">ADC1_IN6</span></td><td class="nc-cell">S2(10K 电位器，VREF±) → R30(220R) → TP21 → PA6<br>D5(SMFJ5.0CA) TVS，C33(100NF)</td><td class="fc-cell">硬件微调电位器 S2（Trim Slider）模拟位置输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">32</td><td class="gn PA">PA7</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PA7 → R66(220R) → LED4C(绿红蓝) pin2<br>LED4C pin4 接 GND</td><td class="fc-cell">LED4C RGB 三色 LED 直接驱动输出（限流 R66）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">67</td><td class="gn PA">PA8</td><td><span class="ft TIM">TIM1_CH1</span></td><td class="nc-cell">J30(HC-PJ-313D trainer口) pin5 → R109(100K) → TP75 → PA8<br>R109 上拉至 +3.3V</td><td class="fc-cell">Trainer 口（J30）PPM 信号输入；上拉保证无插头时高电平</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">68</td><td class="gn PA">PA9</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PA9 → R77(10K) → BOOT0 节点<br>R76(10K) 下拉，C67(100NF)，SW18 手动备用</td><td class="fc-cell">软件控制 BOOT0，程序触发 DFU Bootloader；SW18 为手动备用</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">69</td><td class="gn PA">PA10</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PA10 → R6(220R) → TP5 → SW3(ZX-QC66-4.5TP) ENTER<br>C9(100NF) 滤波</td><td class="fc-cell">ENTER 功能按键输入，按下拉低</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">70</td><td class="gn PA">PA11</td><td><span class="ft USB">USB_OTG_DM</span></td><td class="nc-cell">J13(Type-C) DN1/DN2 → U7(SR05.TCT ESD) → R44(22R) → PA11<br>CC1/CC2 均 NC</td><td class="fc-cell">USB OTG FS D−，DFU 固件烧录 / PC 通信</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">71</td><td class="gn PA">PA12</td><td><span class="ft USB">USB_OTG_DP</span></td><td class="nc-cell">J13(Type-C) DP1/DP2 → U7(SR05.TCT ESD) → R45(22R) → PA12</td><td class="fc-cell">USB OTG FS D+，DFU 固件烧录 / PC 通信</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">72</td><td class="gn PA">PA13</td><td><span class="ft SWD">SWDIO</span></td><td class="nc-cell">PA13 → J27(SWD座) pin10(D10)，TP69</td><td class="fc-cell">SWD 调试接口 SWDIO</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">76</td><td class="gn PA">PA14</td><td><span class="ft SWD">SWDCLK</span></td><td class="nc-cell">PA14 → J27(SWD座) pin8(CLK)<br>R129(10K) 下拉至 GND</td><td class="fc-cell">SWD 调试接口 SWDCLK</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PA" data-s="CONFIRMED"><td class="pn">77</td><td class="gn PA">PA15</td><td><span class="ft SPI">SPI3_NSS</span></td><td class="nc-cell">PA15 → R56(33R) → TP291 → J20 pin12 → LCD FPC pin1(CS)</td><td class="fc-cell">LCD 片选 CS，低电平使能</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+<!-- ═══ PB ═══ -->
+<tr class="sd" data-port="PB"><td colspan="6">PB PORT — Trim · 马达 · RF · SD卡 · BLE · I2C · EEPROM</td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">35</td><td class="gn PB">PB0</td><td><span class="ft ADC">ADC1_IN8</span></td><td class="nc-cell">S1(10K 电位器，VREF±) → R96(220R) → TP49 → PB0<br>D14(SMFJ5.0CA) TVS，C97(100NF) 滤波到 VREF-</td><td class="fc-cell">硬件微调电位器 S1（Trim Slider）模拟位置输入，与 PA6/S2 对称</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">36</td><td class="gn PB">PB1</td><td><span class="ft GPIO">GPIO</span></td><td class="nc-cell">PB1 → R58(2.2K) → Q5(SS8050) 集电极<br>R57(2K) 下拉；Q5 基极经 TP25 连 RF 电路</td><td class="fc-cell">RF 模块电平转换信号，经 Q5 反相/电平转换</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">37</td><td class="gn PB">PB2</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PB2 → R75(10K) → GND（BOOT1 下拉）<br>同时参与振动马达驱动电路</td><td class="fc-cell">上电期间 BOOT1=0；启动后 GPIO_OUT 参与振动马达控制</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">89</td><td class="gn PB">PB3</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PB3 → R1(2.2K) → Q1(SS8050) 基极<br>Q1 → M1(马达)；D1(B5819W) 续流；R2(2K) 下拉；+5V</td><td class="fc-cell">振动马达驱动输出，Q1 导通时 M1 振动</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">90</td><td class="gn PB">PB4</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PB4 → R133(220R) → TP72 → SW23(ZX-QC66-4.5TP) PAGE<br>C126(100NF) 滤波</td><td class="fc-cell">PAGE 功能按键输入（第1路）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">91</td><td class="gn PB">PB5</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PB5 → R53(10K) → Q8(SS8050) 基极<br>Q8 集电极 → LED4B(绿红蓝) + R48(1K) → IP2326 LED(pin6)</td><td class="fc-cell">LED4B RGB 状态灯驱动（经 Q8 放大）；Q8 输出节点同时接 IP2326 充电状态引脚</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">92</td><td class="gn PB">PB6</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PB6 → TP15 → J10(ZX-MX1.25-5PLT RF PORT) pin3</td><td class="fc-cell">RF PORT 接口（J10）引脚，具体信号由固件定义</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">93</td><td class="gn PB">PB7</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PB7 → TP16 → J10(ZX-MX1.25-5PLT RF PORT) pin2</td><td class="fc-cell">RF PORT 接口（J10）引脚，具体信号由固件定义</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">95</td><td class="gn PB">PB8</td><td><span class="ft I2C">I2C1_SCL</span></td><td class="nc-cell">PB8 → R95(4.7KΩ×4排阻) → U14 M24256 SCL(pin6)<br>+3.3V 上拉</td><td class="fc-cell">I2C 时钟，驱动 EEPROM M24256（256Kbit 配置存储）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">96</td><td class="gn PB">PB9</td><td><span class="ft I2C">I2C1_SDA</span></td><td class="nc-cell">PB9 → R95(4.7KΩ×4排阻) → U14 M24256 SDA(pin5)<br>+3.3V 上拉</td><td class="fc-cell">I2C 数据，驱动 EEPROM M24256</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">47</td><td class="gn PB">PB10</td><td><span class="ft UART">USART3_TX</span></td><td class="nc-cell">PB10 → J36(HC-1.25-4PWT BLE) pin2</td><td class="fc-cell">BLE 蓝牙模块 UART TX</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">48</td><td class="gn PB">PB11</td><td><span class="ft UART">USART3_RX</span></td><td class="nc-cell">PB11 → J36(HC-1.25-4PWT BLE) pin3</td><td class="fc-cell">BLE 蓝牙模块 UART RX</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">51</td><td class="gn PB">PB12</td><td><span class="ft SPI">SPI2_NSS</span></td><td class="nc-cell">PB12 → R40(33R) → J16(XKTF-1307-16 TF卡) CD/DAT3(pin2)</td><td class="fc-cell">SD 卡 SPI 片选 CS（SPI 4线模式，非 SDIO）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">52</td><td class="gn PB">PB13</td><td><span class="ft SPI">SPI2_SCK</span></td><td class="nc-cell">PB13 → R39(33R) → J16 CLK(pin5)</td><td class="fc-cell">SD 卡 SPI 时钟</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">53</td><td class="gn PB">PB14</td><td><span class="ft SPI">SPI2_MISO</span></td><td class="nc-cell">PB14 → R41(33R) → J16 DAT0(pin7)</td><td class="fc-cell">SD 卡 SPI MISO</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PB" data-s="CONFIRMED"><td class="pn">54</td><td class="gn PB">PB15</td><td><span class="ft SPI">SPI2_MOSI</span></td><td class="nc-cell">PB15 → R43(33R) → J16 CMD(pin3)</td><td class="fc-cell">SD 卡 SPI MOSI</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+<!-- ═══ PC ═══ -->
+<tr class="sd" data-port="PC"><td colspan="6">PC PORT — 电压监测 · 拨动开关 · RF · SPI3(LCD) · 电源开关 · RTC</td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">15</td><td class="gn PC">PC0</td><td><span class="ft ADC">ADC1_IN10</span></td><td class="nc-cell">VDD → R82(499K) → 节点 → R83(160K) → GND<br>C75(100NF) 滤波；分压比≈0.243</td><td class="fc-cell">电源电压监测 ADC 输入，ADC 读值换算 VDD 实际电压</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">16</td><td class="gn PC">PC1</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PC1 → R99(220R) → TP50 → SW16(YTS1T0161AWG00) LHR<br>C98(100NF) 滤波</td><td class="fc-cell">LHR（左水平右）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">17</td><td class="gn PC">PC2</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PC2 → R63(220R) → TP30 → SW9(YTS1T0161AWG00) RVU<br>C62(100NF) 滤波</td><td class="fc-cell">RVU（右摇杆垂直向上）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">18</td><td class="gn PC">PC3</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PC3 → R52(220R) → TP27 → SW8(YTS1T0161AWG00) RVD<br>C55(100NF) 滤波</td><td class="fc-cell">RVD（右摇杆垂直向下）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">33</td><td class="gn PC">PC4</td><td><span class="ft UART">UART</span></td><td class="nc-cell">PC4 → R15(2.2K) → Q3(SS8050) 集电极<br>Q3 基极 → R13(1K) → AO3407-CN 栅极；RF 电源切换</td><td class="fc-cell">RF PORT 串行接口信号，经 Q3 电平转换；协议由固件定义</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">34</td><td class="gn PC">PC5</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PC5 → R125(220R) → TP65 → SW22(ZX-QC66-4.5TP) RTIV<br>C116(100NF) 滤波</td><td class="fc-cell">RTIV（右油门中位检测）开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">63</td><td class="gn PC">PC6</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PC6 → U13(SN74LVC1G04) → 数字输出<br>C79(100NF)，TP47</td><td class="fc-cell">数字信号经反相器输出，协议由固件定义（S.Bus/CRSF 等）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">64</td><td class="gn PC">PC7</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PC7 → U12(SN74LVC1G04) → 数字输出<br>C77(100NF)，TP45</td><td class="fc-cell">数字信号经反相器输出，协议由固件定义</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">65</td><td class="gn PC">PC8</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">+3.3V → R88(10K) → PC8 → Q10(SS8050) 集电极<br>开集电极；D11 NC</td><td class="fc-cell">Trainer 口插拔检测输入（开集电极）；Q10 由 PC9 控制</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">66</td><td class="gn PC">PC9</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PC9 → R87(2K) → Q10(SS8050) 基极<br>Q10 射极 GND</td><td class="fc-cell">驱动 Q10，与 PC8 构成 Trainer 口插拔检测电路</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">78</td><td class="gn PC">PC10</td><td><span class="ft SPI">SPI3_SCK</span></td><td class="nc-cell">PC10 → R60(33R) → TP321 → J20 pin9 → LCD FPC pin4(D6=SCL)</td><td class="fc-cell">LCD SPI 时钟 SCL</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">79</td><td class="gn PC">PC11</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PC11 → R71(33R) → TP311 → J20 pin10 → LCD FPC pin2(RST)</td><td class="fc-cell">LCD 硬件复位 RST，低电平复位；由已知 4 路对应关系逻辑推断</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">80</td><td class="gn PC">PC12</td><td><span class="ft SPI">SPI3_MOSI</span></td><td class="nc-cell">PC12 → R70(33R) → TP331 → J20 pin8 → LCD FPC pin5(D7=SDA)</td><td class="fc-cell">LCD SPI 数据 SDA/MOSI</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">7</td><td class="gn PC">PC13</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PC13 → SW1(PS-22F03-N-B)<br>R126(220R)，C114(100NF)，TP66</td><td class="fc-cell">电源开关检测；与 PE14 同连 SW1</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">8</td><td class="gn PC">PC14</td><td><span class="ft OSC">OSC32_IN</span></td><td class="nc-cell">PC14 → Y2(X1B000391000116) + R89(33R) + C90(15PF)</td><td class="fc-cell">RTC 32.768kHz 晶振输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PC" data-s="CONFIRMED"><td class="pn">9</td><td class="gn PC">PC15</td><td><span class="ft OSC">OSC32_OUT</span></td><td class="nc-cell">PC15 → Y2(X1B000391000116)</td><td class="fc-cell">RTC 32.768kHz 晶振输出</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+<!-- ═══ PD ═══ -->
+<tr class="sd" data-port="PD"><td colspan="6">PD PORT — 电源控制 · 功能按键 · UART(S.Bus) · SPI3(LCD) · 开关</td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">81</td><td class="gn PD">PD0</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD0 → R29(2.2K) → Q4(SS8050) 基极<br>Q4 → R27(1K) → U2(主电源 P-MOS) 栅极</td><td class="fc-cell">主电源通断控制，经 Q4 驱动主电源 MOSFET U2</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">82</td><td class="gn PD">PD1</td><td><span class="ft ADC">ADC1_IN11</span></td><td class="nc-cell">PD1 → R24(4.7K)/R25(47K) 分压 + D6/D7(B5819W OR 二极管) → VBUS1<br>C30(100NF)，TP76</td><td class="fc-cell">USB 插入/电源状态检测 ADC，D6/D7 OR 逻辑检测 VBUS1</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">83</td><td class="gn PD">PD2</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PD2 → R127(220R) → TP63 → SW19(ZX-QC66-4.5TP) TELE<br>C121(100NF) 滤波</td><td class="fc-cell">TELE 功能按键输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">84</td><td class="gn PD">PD3</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PD3 → R130(220R) → TP64 → SW20(ZX-QC66-4.5TP) PAGE<br>C124(100NF) 滤波</td><td class="fc-cell">PAGE 功能按键输入（第2路）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">85</td><td class="gn PD">PD4</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD4 → U10(SN74LVC1G126) OE# pin1<br>三态缓冲器输出使能，低有效</td><td class="fc-cell">S.Bus/F.Port 半双工收发方向切换；结合 PD5/PD6 构成完整链路</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">86</td><td class="gn PD">PD5</td><td><span class="ft UART">USART2_TX</span></td><td class="nc-cell">PD5 → U9(SN74LVC1G04) → U10(SN74LVC1G126)<br>反相 + 三态输出链路</td><td class="fc-cell">UART2 TX，经反相器输出（S.Bus/F.Port 发送链路）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">87</td><td class="gn PD">PD6</td><td><span class="ft UART">USART2_RX</span></td><td class="nc-cell">PD6 → U11(SN74LVC1G04) → 数字输入<br>R80(10K) 上拉</td><td class="fc-cell">UART2 RX，经反相器接收（S.Bus/F.Port 接收链路）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">88</td><td class="gn PD">PD7</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PD7 → R131(220R) → TP70 → SW21(ZX-QC66-4.5TP) PAGE<br>C125(100NF)，TP68</td><td class="fc-cell">PAGE 功能按键输入（第3路）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">55</td><td class="gn PD">PD8</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD8 → R46(2.2K) → Q7(SS8050) → R62(1K) → Q9(AO3407-CN) → F3(XK) → J27(5P) pin3<br>TP44</td><td class="fc-cell">外部接口 J27 pin3 受保护电源输出控制，F3 保险丝过流保护</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">56</td><td class="gn PD">PD9</td><td><span class="ft GPIO">GPIO</span></td><td class="nc-cell">PD9(pin56) → R36(10K) → GND<br>仅下拉电阻，无上游信号</td><td class="fc-cell">NC，未使用；R36 保持引脚低电平</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">57</td><td class="gn PD">PD10</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD10 → R95(排阻) → U14 M24256 WC#(pin7)<br>低有效写保护</td><td class="fc-cell">EEPROM M24256 写保护控制</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">58</td><td class="gn PD">PD11</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PD11 → TP17 → R22(220R) → J11(ZX-MX1.25-3PLT "C") pin1<br>D3(SMFJ5.0CA) TVS，C26(100NF)</td><td class="fc-cell">外部接口 J11("C") pin1 信号输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">59</td><td class="gn PD">PD12</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD12 → R42(33R) → TP261 → J20 pin11 → LCD FPC pin3(A0)</td><td class="fc-cell">LCD 数据/指令选择 A0（DC/RS）；高=显示数据，低=控制指令</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">60</td><td class="gn PD">PD13</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PD13 → R51(2.2K) → Q6(SS8050) 基极<br>Q6 集电极 → R34(0R) → J14(HC-1.25-2PWT) pin1/2<br>C47(4.7UF) + C48(100NF) 去耦；TP20/TP24</td><td class="fc-cell">LCD 背光控制输出；Q6 驱动 J14(2-pin MX1.25 背光接口)</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">61</td><td class="gn PD">PD14</td><td><span class="ft GPIO">GPIO</span></td><td class="nc-cell">PD14(pin61)，原理图标有 × 符号</td><td class="fc-cell">NC，未连接</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PD" data-s="CONFIRMED"><td class="pn">62</td><td class="gn PD">PD15</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PD15 → R102(220R) → TP58 → SW18(YTS1T0161AWG00) LHL<br>C101(100NF) 滤波</td><td class="fc-cell">LHL（左水平左）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+<!-- ═══ PE ═══ -->
+<tr class="sd" data-port="PE"><td colspan="6">PE PORT — 外部接口 · 拨动开关 · LED · 编码器 · 按键 · Trainer</td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">97</td><td class="gn PE">PE0</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE0 → TP18 → R26(220R) → J11(ZX-MX1.25-3PLT "C") pin3<br>D4(SMFJ5.0CA) TVS，C28(100NF)</td><td class="fc-cell">外部接口 J11("C") pin3 信号输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">98</td><td class="gn PE">PE1</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE1 → TP11 → R7(220R) → J2(PS-22F03-N-B "F") pin2<br>C11(100NF) 滤波</td><td class="fc-cell">J2 功能键输入，与 PE8 共用同一物理开关不同触点</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">1</td><td class="gn PE">PE2</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PE2(pin1) → R64(220R) → LED4A(绿红蓝)</td><td class="fc-cell">LED4A RGB 三色 LED 直接驱动输出</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">2</td><td class="gn PE">PE3</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE3 → R23(220R) → TP19 → SW6(YTS1T0161AWG00) RHL<br>C27(100NF) 滤波</td><td class="fc-cell">RHL（右水平左）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">3</td><td class="gn PE">PE4</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE4 → R21(220R) → TP14 → SW4(YTS1T0161AWG00) RHR<br>C25(100NF) 滤波</td><td class="fc-cell">RHR（右水平右）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">4</td><td class="gn PE">PE5</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE5 → R85(220R) → TP39 → SW14(YTS1T0161AWG00) LVU<br>C73(100NF) 滤波</td><td class="fc-cell">LVU（左摇杆垂直向上）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">5</td><td class="gn PE">PE6</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE6 → R90(220R) → TP42 → SW13(YTS1T0161AWG00) LVD<br>C88(100NF) 滤波</td><td class="fc-cell">LVD（左摇杆垂直向下）拨动开关输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">38</td><td class="gn PE">PE7</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE7 → R98(220R) → TP53 → J29(ZX-MX1.25-3PLT "B") pin1<br>D15(SMFJ5.0CA) TVS，C99(100NF)</td><td class="fc-cell">外部接口 J29("B") pin1 信号输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">39</td><td class="gn PE">PE8</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE8 → J2(PS-22F03-N-B "F")<br>C12(100NF) 去抖</td><td class="fc-cell">J2 功能键按键输入，与 PE1 共用同一物理开关</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">40</td><td class="gn PE">PE9</td><td><span class="ft TIM">TIM1_CH1</span></td><td class="nc-cell">PE9 → J38(ALPS 编码器) A相，TP3</td><td class="fc-cell">ALPS 旋转编码器 A 相，正交解码</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">41</td><td class="gn PE">PE10</td><td><span class="ft TIM">TIM1_CH2</span></td><td class="nc-cell">PE10 → J38(ALPS 编码器) B相，TP4</td><td class="fc-cell">ALPS 旋转编码器 B 相，正交解码</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">42</td><td class="gn PE">PE11</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE11 → R3(220R) → TP2 → SW2(ZX-QC66-4.5TP) MDL<br>C4(100NF) 滤波</td><td class="fc-cell">MDL（模型选择）功能按键输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">43</td><td class="gn PE">PE12</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PE12 → R69(1K) → AD8002D SHUTDOWN(pin1)<br>R68 NC 未焊</td><td class="fc-cell">AD8002D 使能/关断控制，不使用 Trainer 时可关断 op-amp</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">44</td><td class="gn PE">PE13</td><td><span class="ft GPIO">GPIO_OUT</span></td><td class="nc-cell">PE13 → D8(1N4148W) → R65(220R) → LED4B(绿红蓝)<br>D8 隔离，不经过 Q8</td><td class="fc-cell">LED4B RGB 三色 LED 直接驱动（D8 隔离）；与 PB5/Q8 路径独立</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">45</td><td class="gn PE">PE14</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE14 → SW1(PS-22F03-N-B)<br>R123(220R)，C114(100NF)，TP66</td><td class="fc-cell">电源开关检测；与 PC13 同连 SW1</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="PE" data-s="CONFIRMED"><td class="pn">46</td><td class="gn PE">PE15</td><td><span class="ft GPIO">GPIO_IN</span></td><td class="nc-cell">PE15 → R100(220R) → TP52 → J29(ZX-MX1.25-3PLT "B") pin3<br>D16(SMFJ5.0CA) TVS，C100(100NF)</td><td class="fc-cell">外部接口 J29("B") pin3 信号输入</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+<!-- ═══ SYS ═══ -->
+<tr class="sd" data-port="SYS"><td colspan="6">系统 / 电源 / 时钟引脚</td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">14</td><td class="gn SYS">NRST</td><td><span class="ft PWR">RESET</span></td><td class="nc-cell">NRST → J27(SWD座) pin1，TP71<br>R128(10K) 上拉 +3.3V，C83(100NF) → GND</td><td class="fc-cell">系统复位，低有效</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">94</td><td class="gn SYS">BOOT0</td><td><span class="ft PWR">BOOT0</span></td><td class="nc-cell">BOOT0 → R27(1K) → GND；SW11 可强制拉高<br>PA9 可软件控制</td><td class="fc-cell">Bootloader 模式选择；SW11 物理按键，PA9 软件触发</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">99</td><td class="gn SYS">PDR_ON</td><td><span class="ft PWR">PDR</span></td><td class="nc-cell">PDR_ON 直接连至 VDD</td><td class="fc-cell">内部 PDR 上电复位使能</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">49</td><td class="gn SYS">VCAP_1</td><td><span class="ft PWR">VCAP</span></td><td class="nc-cell">VCAP_1 → C61(2.2UF) → GND</td><td class="fc-cell">内部 1.2V LDO 滤波节点（2.2µF 已实物确认）</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">73</td><td class="gn SYS">VCAP_2</td><td><span class="ft PWR">VCAP</span></td><td class="nc-cell">VCAP_2 → 外部 2.2µF → GND</td><td class="fc-cell">内部 1.2V LDO 滤波节点</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">21</td><td class="gn SYS">VREF+</td><td><span class="ft PWR">VREF+</span></td><td class="nc-cell">VREF+ → S1/S2(电位器) → L7(磁珠) → C80/C81<br>独立模拟参考电压网络</td><td class="fc-cell">ADC 正基准，摇杆/Trim 差分参考，与数字电源隔离</td><td><span class="sb sc">Confirmed</span></td></tr>
+<tr data-port="SYS" data-s="CONFIRMED"><td class="pn">12/13</td><td class="gn SYS">PH0/PH1</td><td><span class="ft OSC">HSE_OSC</span></td><td class="nc-cell">PH0/PH1 → Y1(X322512MOB4SI) + C89/C92(10PF)</td><td class="fc-cell">主时钟 HSE 晶振输入/输出</td><td><span class="sb sc">Confirmed</span></td></tr>
+
+</tbody></table></div>
+
+<div class="legend">
+  <div class="li"><span class="sb sc">Confirmed</span> 原理图截图直接证实，可用于 BSP 编写</div>
+</div>
+
+<script>
+const si=document.getElementById('si'),rc=document.getElementById('rc');
+const cc=document.getElementById('cc');
+const tb=document.getElementById('tb');
+let af='ALL';
+const rows=Array.from(tb.querySelectorAll('tr:not(.sd)'));
+cc.textContent=rows.length;
+function go(){
+  const q=si.value.toLowerCase();let v=0;
+  rows.forEach(r=>{
+    const p=r.dataset.port||'',s=r.dataset.s||'',t=r.textContent.toLowerCase();
+    const fm=af==='ALL'||af===s||af===p;
+    const sm=!q||t.includes(q);
+    r.classList.toggle('hidden',!(fm&&sm));
+    if(fm&&sm)v++;
+  });
+  tb.querySelectorAll('.sd').forEach(d=>{
+    const p=d.dataset.port;
+    const any=Array.from(tb.querySelectorAll(`tr[data-port="${p}"]:not(.sd)`)).some(r=>!r.classList.contains('hidden'));
+    d.classList.toggle('hidden',!any);
+  });
+  rc.textContent=v;
+}
+document.querySelectorAll('.fb').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.fb').forEach(x=>x.className='fb');
+    af=b.dataset.f;
+    const cls={'ALL':'a-all','CONFIRMED':'a-con'}[af]||'a-prt';
+    b.classList.add(cls);go();
+  });
+});
+si.addEventListener('input',go);
+go();
+</script>
+</body></html>
