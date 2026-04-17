@@ -44,7 +44,11 @@
 #else
   #define LCD_CONTRAST_OFFSET            160
 #endif
-#define RESET_WAIT_DELAY_MS            300 // Wait time after LCD reset before first command
+#if defined(RADIO_NOVAX_X7)
+  #define RESET_WAIT_DELAY_MS          20  // ST7567/UC1701 datasheet needs >=5 ms; 20 ms is a safe margin
+#else
+  #define RESET_WAIT_DELAY_MS          300 // Wait time after LCD reset before first command
+#endif
 #define WAIT_FOR_DMA_END()             do { } while (lcd_busy)
 
 #define LCD_NCS_HIGH()  gpio_set(LCD_NCS_GPIO)
@@ -386,7 +390,10 @@ void lcdReset()
 {
   LCD_NCS_HIGH();
   LCD_RST_LOW();
-#if LCD_W == 128
+#if defined(RADIO_NOVAX_X7)
+  // axTx uses 10 ms reset hold and it works on the same panel.
+  delay_ms(10);
+#elif LCD_W == 128
   delay_ms(150);
 #else
   delay_ms(1); // Only 3 us needed according to data-sheet, we use 1 ms

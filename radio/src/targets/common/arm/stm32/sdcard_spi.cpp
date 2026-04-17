@@ -268,9 +268,14 @@ static sd_init_fsm_state_t _init_sd_fsm_step(const stm32_spi_t* spi,
   case SD_INIT_SPI_POWER_SEQ:
     TRACE("SD_INIT_SPI_POWER_SEQ");
     {
-      // wait minimum 50 ms until card is powered
+      // wait until card VDD is stable; modern cards are ready in 1-2 ms
+#if defined(RADIO_NOVAX_X7)
+      const uint32_t sd_power_on_wait_us = 5 * US_PER_MS;
+#else
+      const uint32_t sd_power_on_wait_us = 50 * US_PER_MS;
+#endif
       uint32_t power_on_timeout = timersGetUsTick();
-      while(timersGetUsTick() - power_on_timeout < 50 * US_PER_MS);
+      while(timersGetUsTick() - power_on_timeout < sd_power_on_wait_us);
     }
 
     // unselect sdcard for power up sequence

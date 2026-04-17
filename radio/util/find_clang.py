@@ -69,6 +69,10 @@ def findLibClang():
         libSuffix = ".dylib"
     elif sys.platform.startswith("linux"):
         knownPaths = [
+            "/usr/lib/llvm-18/lib",
+            "/usr/lib/llvm-17/lib",
+            "/usr/lib/llvm-16/lib",
+            "/usr/lib/llvm-15/lib",
             "/usr/lib/llvm-14/lib",
             "/usr/lib/llvm-11/lib",
             "/usr/lib/llvm-7/lib",

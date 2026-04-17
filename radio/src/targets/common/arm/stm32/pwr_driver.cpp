@@ -27,6 +27,10 @@
 
 void pwrInit()
 {
+  // novaX-X7: do NOT latch PWR_ON here. runStartupAnimation() latches after
+  // the 4-dot hold completes, which gives us the correct long-press-to-boot
+  // UX. The MCU stays alive during boardInit purely because the user is
+  // still holding the button (hardware power diode).
 
 #if defined(SD_PRESENT_GPIO)
   gpio_init(SD_PRESENT_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
@@ -132,7 +136,14 @@ bool pwrOffPressed()
 
 void pwrResetHandler()
 {
+#if !defined(RADIO_NOVAX_X7)
   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     pwrOn();
   }
+#endif
+  // novaX-X7: never auto-latch here. The bootloader intentionally does not
+  // clear RCC_CSR reset flags, so a brief tap that doesn't fully drop VDD
+  // can leave stale SFTRST/IWDGRST bits and cause the firmware to think
+  // this is a watchdog reboot -> auto-latch -> tap-to-boot bug. Let
+  // runStartupAnimation() be the sole arbiter of latching.
 }

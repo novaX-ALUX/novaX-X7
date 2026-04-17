@@ -3,7 +3,9 @@
 /.autotools
 /*.user
 /*.user.*
-/doc/
+/doc/*
+!/doc/BoxerV22.ioc
+!/doc/X7_pinmap.md
 build*/
 cmake-build-*/
 /debian/
