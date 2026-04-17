@@ -379,6 +379,34 @@ void processCrossfireTelemetryFrame(uint8_t module, uint8_t* rxBuffer,
     default:
       if (id == DEVICE_INFO_ID && rxBuffer[4]== MODULE_ADDRESS) {
         uint8_t nameSize = rxBuffer[1] - 18;
+
+#if defined(RADIO_NOVAX_X7)
+        // Unconditionally rewrite the module name reported via DEVICE_INFO
+        // before it reaches LUA or the version UI. This hides upstream ELRS
+        // firmware branding regardless of the target the module was built
+        // against.
+        //
+        // The null terminator MUST stay at its original offset
+        // (rxBuffer[5 + nameSize - 1]) so the LUA script's name-scanning
+        // loop finds it in the same place and reads serial/hwid/fwver
+        // from the correct offsets. Pad unused bytes with spaces, not
+        // nulls.
+        if (nameSize > 1) {
+          char* modName = (char*)&rxBuffer[5];
+          const char* rep = (module == INTERNAL_MODULE) ? "novaX Int"
+                                                        : "novaX Ext";
+          uint8_t rlen = strlen(rep);
+          uint8_t maxChars = nameSize - 1;
+          if (rlen >= maxChars) {
+            memcpy(modName, rep, maxChars);
+          } else {
+            memcpy(modName, rep, rlen);
+            memset(modName + rlen, ' ', maxChars - rlen);
+          }
+          modName[maxChars] = '\0';
+        }
+#endif
+
         strncpy((char *)&crossfireModuleStatus[module].name, (const char *)&rxBuffer[5], CRSF_NAME_MAXSIZE);
         crossfireModuleStatus[module].name[CRSF_NAME_MAXSIZE -1] = 0; // For some reason, GH din't like strlcpy
         if (strncmp((const char *) &rxBuffer[5 + nameSize], "ELRS", 4) == 0)

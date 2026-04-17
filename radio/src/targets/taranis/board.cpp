@@ -289,11 +289,13 @@ void boardInit()
   DBGMCU->APB2FZ = 0x00070003;
 #endif
 
-#if defined(PWR_BUTTON_PRESS)
+#if defined(PWR_BUTTON_PRESS) && !defined(RADIO_NOVAX_X7)
   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     pwrOn();
   }
 #endif
+// novaX-X7: skip the wdg/sw-reset auto-latch (stale RCC_CSR flags can
+// survive a tap that briefly drops power, producing tap-to-boot).
 
 #if defined(TOPLCD_GPIO)
   toplcdInit();
@@ -303,9 +305,13 @@ void boardInit()
   usbChargerInit();
 #endif
 
-#if defined(RTCLOCK)
+#if defined(RTCLOCK) && !defined(RADIO_NOVAX_X7)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
+  // novaX-X7: skip rtcInit(). HAL_RCC_OscConfig with LSE_ON polls the LSE
+  // crystal until LSERDY or LSE_STARTUP_TIMEOUT (5000 ms). On a cold boot
+  // with no VBAT retention this stalls boot by 1-5 s. axTx has no RTC
+  // init on the same hardware and boots fine.
 
   backlightInit();
 

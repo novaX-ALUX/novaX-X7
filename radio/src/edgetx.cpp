@@ -382,6 +382,13 @@ void generalDefault()
   g_eeGeneral.pwrOffSpeed = 2;
 #endif
 
+#if defined(RADIO_NOVAX_X7)
+  g_eeGeneral.splashMode = 2;   // 2 s splash (yaml scale)
+  g_eeGeneral.pwrOnSpeed  = -1; // 300 ms hold to boot (yaml -1 -> 300 ms)
+  g_eeGeneral.pwrOffSpeed = -1; // 300 ms hold to shut down
+  g_eeGeneral.dontPlayHello = 1;
+#endif
+
 #if defined(MANUFACTURER_RADIOMASTER)
   g_eeGeneral.audioMuteEnable = 1;
 #endif
@@ -658,13 +665,22 @@ static void checkFailsafe()
 void checkAll(bool isBootCheck)
 {
   checkSDfreeStorage();
-  
-  // we don't check the throttle stick if the radio is not calibrated
-  if (g_eeGeneral.chkSum == evalChkSum()) {
-    checkThrottleStick();
-  }
 
-  checkSwitches();
+#if defined(RADIO_NOVAX_X7)
+  // novaX-X7: skip throttle / switch warnings on boot. ADC values are not
+  // yet stable right after boot, which makes these warnings spin for ~2.8 s
+  // waiting for the ADC to settle to "idle". Saves ~2.8 s of boot time.
+  // Warnings still run on model change (isBootCheck == false).
+  if (!isBootCheck)
+#endif
+  {
+    // we don't check the throttle stick if the radio is not calibrated
+    if (g_eeGeneral.chkSum == evalChkSum()) {
+      checkThrottleStick();
+    }
+
+    checkSwitches();
+  }
   checkFailsafe();
 
   if (isBootCheck && !g_eeGeneral.disableRtcWarning) {
@@ -1344,9 +1360,17 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 // Overridden by simulator startup
 uint8_t startOptions = 0;
 
+#if defined(RADIO_NOVAX_X7)
+uint32_t novax_boot_ts[6] = {0};
+#define NOVAX_BOOT_MARK(n)  do { novax_boot_ts[n] = get_tmr10ms(); } while (0)
+#endif
+
 void edgeTxInit()
 {
   TRACE("edgeTxInit");
+#if defined(RADIO_NOVAX_X7)
+  NOVAX_BOOT_MARK(0);
+#endif
 
   #if defined(COLORLCD)
   // SD_CARD_PRESENT() does not work properly on most
@@ -1387,6 +1411,23 @@ void edgeTxInit()
   // No RTC backup - try and load even for EM startup
   storageReadRadioSettings(false);
 #endif
+#if defined(RADIO_NOVAX_X7)
+  NOVAX_BOOT_MARK(1);
+  // CRITICAL: override power-timing knobs BEFORE runStartupAnimation().
+  // The user's radio.yml may carry pwrOnSpeed=0 which collapses
+  // PWR_PRESS_DURATION_MIN to 0 ms, making the animation latch instantly
+  // and producing tap-to-boot. Force pwrOnSpeed=2 (100 ms hold) so the
+  // 4-dot animation is actually drawn and a tap can't latch.
+  // yaml scale is -2..2; pwrDelayFromYaml maps: -1 -> 300 ms, 0 -> 200 ms,
+  // 1 -> 100 ms, 2 -> 0 ms (instant = tap-to-boot bug!), -2 -> 50 ms.
+  // Use -1 (300 ms) for a clear long-press requirement on both ends,
+  // which also makes drawShutdownAnimation() actually render (it skips
+  // when totalDuration == 0).
+  g_eeGeneral.pwrOnSpeed = -1;
+  g_eeGeneral.pwrOffSpeed = -1;
+  g_eeGeneral.splashMode = 2;
+  g_eeGeneral.dontPlayHello = 1;
+#endif
 
 #if defined(GUI) && !defined(COLORLCD)
 #if LCD_W == 128
@@ -1399,12 +1440,17 @@ void edgeTxInit()
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
 
 #if defined(STARTUP_ANIMATION)
+#if defined(RADIO_NOVAX_X7)
+  // Always run the animation; do not trust RCC_CSR stale flags.
+  runStartupAnimation();
+#else
   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     pwrOn();
   }
   else {
     runStartupAnimation();
   }
+#endif
 #else // defined(STARTUP_ANIMATION)
   pwrOn();
 #if defined(HAPTIC)
@@ -1468,6 +1514,22 @@ void edgeTxInit()
   storageReadAll();
 #endif
 
+#if defined(RADIO_NOVAX_X7)
+  NOVAX_BOOT_MARK(2);
+  // storageReadAll() can clobber the general-settings copy with yaml
+  // values again; re-assert the power/splash overrides. Keep them in
+  // sync with the earlier block before runStartupAnimation.
+  // yaml scale is -2..2; pwrDelayFromYaml maps: -1 -> 300 ms, 0 -> 200 ms,
+  // 1 -> 100 ms, 2 -> 0 ms (instant = tap-to-boot bug!), -2 -> 50 ms.
+  // Use -1 (300 ms) for a clear long-press requirement on both ends,
+  // which also makes drawShutdownAnimation() actually render (it skips
+  // when totalDuration == 0).
+  g_eeGeneral.pwrOnSpeed = -1;
+  g_eeGeneral.pwrOffSpeed = -1;
+  g_eeGeneral.splashMode = 2;
+  g_eeGeneral.dontPlayHello = 1;
+#endif
+
   initSerialPorts();
 
 #if defined(AUDIO)
@@ -1478,7 +1540,13 @@ void edgeTxInit()
 #endif
 #endif
 
+#if !defined(RADIO_NOVAX_X7)
+  // axTx does no SD audio-file enumeration at boot. Skip the f_opendir /
+  // f_readdir scan of /SOUNDS/en/SYSTEM/ (50-300 ms). sdAvailableSystemAudioFiles
+  // stays zero-initialised so audio() falls back to default beeps, which is
+  // what the user wants for a fast boot.
   referenceSystemAudioFiles();
+#endif
   audioQueue.start();
 
 #if defined(COLORLCD)
@@ -1542,7 +1610,13 @@ void edgeTxInit()
     }
     else if (!(startOptions & OPENTX_START_NO_CHECKS)) {
       checkAlarm();
+#if defined(RADIO_NOVAX_X7)
+      NOVAX_BOOT_MARK(3);
+#endif
       checkAll(true);
+#if defined(RADIO_NOVAX_X7)
+      NOVAX_BOOT_MARK(4);
+#endif
       PLAY_MODEL_NAME();
     }
 #endif // defined(GUI)
@@ -1686,7 +1760,7 @@ uint32_t pwrCheck()
   static uint8_t pwr_check_state = PWR_CHECK_ON;
 
   bool inactivityShutdown = pwrOffDueToInactivity();
-  
+
   if (pwr_check_state == PWR_CHECK_OFF) {
     return e_power_off;
   }
