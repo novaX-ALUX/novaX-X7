@@ -190,9 +190,18 @@ void lcdStart()
     lcdWriteCommand(0x00); // 5x
 #if defined(RADIO_NOVAX_X7)
     lcdWriteCommand(0xa2); // Set bias=1/9
-    lcdWriteCommand(0x23); // Set internal rb/ra=5.5
-    lcdWriteCommand(0x2f); // All built-in power circuits on
-    lcdWriteCommand(0x27); // Power control set (~9V)
+    lcdWriteCommand(0x24); // Set resistor ratio (V0/Vop multiplier, 0x20-0x27)
+    lcdWriteCommand(0x2f); // Power control: all built-in power circuits on (0x28-0x2f)
+    // Resistor-ratio history for this panel (0x20-0x27 register sets the V0/Vop
+    // multiplier; 0x28-0x2f is the separate power-control register):
+    //   0x27 (max) - originally issued here, mislabelled "Power control (~9V)".
+    //                Drove V0 far too high: dark/black background + fast flicker
+    //                (booster could not sustain the over-driven voltage).
+    //   0x23       - dropping to this killed the flicker but left V0 too low: the
+    //                whole panel was washed out, text barely visible even at max
+    //                contrast (the 10-30 electronic-volume range can't compensate).
+    //   0x25       - readable, but the background still looked a touch too dark.
+    //   0x24       - one step lighter: clean background, text still solid.
 #else
     lcdWriteCommand(0xa3); // Set bias=1/6
     lcdWriteCommand(0x22); // Set internal rb/ra=5.0
