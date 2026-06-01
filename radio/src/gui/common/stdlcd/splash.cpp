@@ -52,12 +52,26 @@ void waitSplash()
 
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
 
+#if defined(RADIO_NOVAX_X7)
+    // Fast boot leaves the ADC inputs and key queue still settling when the
+    // splash starts. The input-activity check below would then read that
+    // transient as "user input" and skip the logo on the very first loop
+    // iteration (the symptom: animation plays, then straight to the main view
+    // with no visible logo). Hold the logo for a minimum time before honouring
+    // a skip request, so it is always shown; the user can still skip after.
+    tmr10ms_t skipAllowedTime = get_tmr10ms() + 50; // 500 ms
+#endif
+
     while (tgtime > get_tmr10ms()) {
       RTOS_WAIT_TICKS(1);
 
       getADC();
 
-      if (getEvent() || inactivityCheckInputs())
+      bool allowSkip = true;
+#if defined(RADIO_NOVAX_X7)
+      allowSkip = (get_tmr10ms() >= skipAllowedTime);
+#endif
+      if (allowSkip && (getEvent() || inactivityCheckInputs()))
         return;
 
 #if defined(PWR_BUTTON_PRESS)
