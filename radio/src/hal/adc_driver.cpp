@@ -220,19 +220,31 @@ bool adcApplyDefaultMultiposCalib()
   uint8_t pot_offset = adcGetInputOffset(ADC_INPUT_FLEX);
   uint8_t max_pots = adcGetMaxInputs(ADC_INPUT_FLEX);
   bool applied = false;
+  const uint8_t def[] = XPOS_CALIB_DEFAULT;
 
   for (uint8_t i = 0; i < max_pots; i++) {
     if (!IS_POT_MULTIPOS(i)) continue;
 
     StepsCalibData* calib = (StepsCalibData*)&g_eeGeneral.calib[i + pot_offset];
-    if (IS_MULTIPOS_CALIBRATED(calib)) continue;
 
-    // No valid calibration yet: load the target's built-in default so the
-    // multipos resolves into discrete positions (without count > 0 the
-    // multipos reads as uncalibrated and is unusable as a source/switch).
-    size_t index = 0;
-    calib->count = XPOTS_MULTIPOS_COUNT - 1;
-    for (const auto& value : XPOS_CALIB_DEFAULT) calib->steps[index++] = value;
+#if defined(RADIO_NOVAX_X7)
+    // The 6-pos is a fixed STC15-encoded switch with a known voltage profile,
+    // so its calibration is always the built-in default. On-device
+    // recalibration of a button-driven multipos is unreliable (it writes
+    // boundaries on a different scale than apply_multipos reads), so enforce
+    // the default on every boot. Idempotent: only written when it differs.
+    bool needs = (calib->count != sizeof(def));
+    for (uint8_t k = 0; !needs && k < sizeof(def); k++)
+      if (calib->steps[k] != def[k]) needs = true;
+    if (!needs) continue;
+#else
+    // Other targets: only seed the default when there is no valid calibration
+    // (count == 0), leaving a user's own calibration untouched.
+    if (IS_MULTIPOS_CALIBRATED(calib)) continue;
+#endif
+
+    calib->count = sizeof(def);
+    for (uint8_t k = 0; k < sizeof(def); k++) calib->steps[k] = def[k];
     applied = true;
   }
 
