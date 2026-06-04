@@ -22,6 +22,7 @@
 #include "edgetx.h"
 #include "storage.h"
 #include "sdcard_common.h"
+#include "hal/adc_driver.h"
 #include "modelslist.h"
 #include "model_init.h"
 
@@ -242,6 +243,14 @@ void storageReadAll()
     loadModelHeaders();
   }
 #endif
+
+  // Self-heal multipos calibration: settings carried over a firmware update
+  // (or never calibrated) may leave a multipos pot with count == 0, which
+  // reads as uncalibrated and makes the 6-pos switch unusable as a
+  // source/switch. Apply the built-in default so it works out of the box.
+  if (adcApplyDefaultMultiposCalib()) {
+    storageDirty(EE_GENERAL);
+  }
 
   for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {

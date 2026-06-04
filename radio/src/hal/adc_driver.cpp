@@ -214,6 +214,34 @@ void adcCalibSetMinMax()
   }
 }
 
+bool adcApplyDefaultMultiposCalib()
+{
+#if defined(XPOS_CALIB_DEFAULT)
+  uint8_t pot_offset = adcGetInputOffset(ADC_INPUT_FLEX);
+  uint8_t max_pots = adcGetMaxInputs(ADC_INPUT_FLEX);
+  bool applied = false;
+
+  for (uint8_t i = 0; i < max_pots; i++) {
+    if (!IS_POT_MULTIPOS(i)) continue;
+
+    StepsCalibData* calib = (StepsCalibData*)&g_eeGeneral.calib[i + pot_offset];
+    if (IS_MULTIPOS_CALIBRATED(calib)) continue;
+
+    // No valid calibration yet: load the target's built-in default so the
+    // multipos resolves into discrete positions (without count > 0 the
+    // multipos reads as uncalibrated and is unusable as a source/switch).
+    size_t index = 0;
+    calib->count = XPOTS_MULTIPOS_COUNT - 1;
+    for (const auto& value : XPOS_CALIB_DEFAULT) calib->steps[index++] = value;
+    applied = true;
+  }
+
+  return applied;
+#else
+  return false;
+#endif
+}
+
 static void disableUncalibratedXPots()
 {
   uint8_t pot_offset = adcGetInputOffset(ADC_INPUT_FLEX);

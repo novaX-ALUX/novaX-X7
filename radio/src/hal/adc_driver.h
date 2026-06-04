@@ -106,6 +106,12 @@ void adcCalibSetMinMax();
 // Finalise calibration data and persist in storage
 void adcCalibStore();
 
+// Apply the target's built-in default multipos calibration to any multipos
+// pot that has no valid calibration yet (count == 0). Lets a factory-fresh or
+// carried-over (e.g. across a firmware update) config use the 6-pos switch
+// without a manual calibration pass. Returns true if anything was written.
+bool adcApplyDefaultMultiposCalib();
+
 #if defined(JITTER_MEASURE)
 extern JitterMeter<uint16_t> rawJitter[MAX_ANALOG_INPUTS];
 extern JitterMeter<uint16_t> avgJitter[MAX_ANALOG_INPUTS];

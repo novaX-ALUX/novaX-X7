@@ -404,7 +404,13 @@ void generalDefault()
   uint8_t defaultCalib[] = DEFAULT_6POS_CALIB;
   StepsCalibData* calib = (StepsCalibData*)&g_eeGeneral.calib[DEFAULT_6POS_IDX];
 
-  for (int i = 0; i < 5; i++) {
+  // count = number of step boundaries (positions - 1). Without this the
+  // multipos reads as uncalibrated (IS_MULTIPOS_CALIBRATED checks count > 0),
+  // so the steps below are ignored and the 6-pos never resolves into
+  // positions - it can't be used as a switch/source in mixes.
+  calib->count = sizeof(defaultCalib);
+
+  for (unsigned i = 0; i < sizeof(defaultCalib); i++) {
     calib->steps[i] = defaultCalib[i];
   }
 #endif
