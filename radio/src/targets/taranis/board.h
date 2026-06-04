@@ -90,7 +90,11 @@ enum {
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
 // POTS and SLIDERS default configuration
-#if defined(RADIO_BOXER) || defined(RADIO_NOVAX_X7)
+#if defined(RADIO_NOVAX_X7)
+// 6POS boundaries for the evenly-spread STC15 PWM (see DEFAULT_6POS_CALIB):
+// midpoints of the raw/32 targets 0/23/46/69/92/115 -> {11,34,57,80,103}.
+#define XPOS_CALIB_DEFAULT  {0x0B, 0x22, 0x39, 0x50, 0x67}
+#elif defined(RADIO_BOXER)
 #define XPOS_CALIB_DEFAULT  {0x5, 0xd, 0x16, 0x1f, 0x28}
 #endif
 

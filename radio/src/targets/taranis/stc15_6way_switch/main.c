@@ -44,15 +44,18 @@
  *   Two-stage RC LPF (R=10K, C=100nF, fc=159 Hz per stage)
  *   smooths it to a DC voltage read by STM32 PA5 (ADC1_IN5).
  *
- *   edgeTX DEFAULT_6POS_CALIB = {5, 13, 22, 31, 40}
+ *   Positions are spread evenly so each sits centre-bucket with wide margin.
+ *   edgeTX compares raw-ADC/32 against DEFAULT_6POS_CALIB (novaX-X7) =
+ *   {11, 34, 57, 80, 103} -- the midpoints of the per-position raw/32 values
+ *   0/23/46/69/92/115.
  *
- *     Pos  Zone (V)          Target V   Duty/50   %
- *      0   0.000 - 0.064      0.000       0       0%
- *      1   0.065 - 0.167      0.132       2       4%
- *      2   0.168 - 0.283      0.198       3       6%
- *      3   0.284 - 0.399      0.330       5      10%
- *      4   0.400 - 0.515      0.462       7      14%
- *      5   0.516 - 3.300      1.650      25      50%
+ *     Pos  Bucket (V)        Target V   Duty/50    %
+ *      0   0.000 - 0.297      0.000       0        0%
+ *      1   0.297 - 0.891      0.594       9       18%
+ *      2   0.891 - 1.485      1.188      18       36%
+ *      3   1.485 - 2.079      1.782      27       54%
+ *      4   2.079 - 2.673      2.376      36       72%
+ *      5   2.673 - 3.300      2.970      45       90%
  *
  * ---------------------------------------------------------------
  * ISP programming (via NC3 connector):
@@ -131,21 +134,30 @@ __sbit __at(0xC8 + 5) P5_5;
  * PWM period 50 steps -> 50 x 20 us = 1.0 ms -> 1 kHz
  *
  * At 1 kHz through 2-stage RC (fc 159 Hz):
- *   ripple < 30 mV pp, well within ~65 mV minimum zone width.
+ *   ripple < 30 mV pp, negligible against the ~594 mV spacing between
+ *   evenly-spread positions (see duty_table).
  */
 #define PWM_PERIOD   50
 #define TH0_RELOAD   35
 #define DEBOUNCE_TH  30   /* ~30 ms at 1 ms loop rate */
 #define NO_BUTTON    0xFFu
 
-/* PWM duty per position (out of PWM_PERIOD = 50) */
+/* PWM duty per position (out of PWM_PERIOD = 50).
+ *
+ * Positions are spread EVENLY across the range (duty step 9 -> ~0.59 V apart)
+ * so each lands dead-centre of its edgeTX 6POS bucket with ~0.3 V of margin to
+ * either boundary.  The earlier table crammed positions 0-4 into 0-0.46 V, so
+ * adjacent steps were only ~60-130 mV apart — comparable to the PWM ripple and
+ * the 1/50 duty resolution — and positions sitting on a bucket edge flickered
+ * between two values (the 6P source jittered in the mixer).  Even spacing makes
+ * the ripple negligible relative to the margin. */
 static const __code unsigned char duty_table[6] = {
-    0,   /* pos 0 -> 0.000 V */
-    2,   /* pos 1 -> 0.132 V */
-    3,   /* pos 2 -> 0.198 V */
-    5,   /* pos 3 -> 0.330 V */
-    7,   /* pos 4 -> 0.462 V */
-    25   /* pos 5 -> 1.650 V */
+     0,   /* pos 0 -> 0.000 V */
+     9,   /* pos 1 -> 0.594 V */
+    18,   /* pos 2 -> 1.188 V */
+    27,   /* pos 3 -> 1.782 V */
+    36,   /* pos 4 -> 2.376 V */
+    45    /* pos 5 -> 2.970 V */
 };
 
 /* ================================================================

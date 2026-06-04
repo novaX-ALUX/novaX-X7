@@ -1872,7 +1872,15 @@
   #define ADC_DIRECTION {1,-1,-1,1,  -1,1,  1,  1}
 #endif
 
-#if defined(RADIO_BOXER) || defined(RADIO_NOVAX_X7)
+#if defined(RADIO_NOVAX_X7)
+  // novaX-X7 drives the 6POS from an STC15 PWM spread evenly across the range.
+  // apply_multipos() compares (raw ADC / 32) against these step boundaries
+  // (s_anaFilt = raw*JITTER_ALPHA(16); vShifted = (s_anaFilt / (JITTER_ALPHA *
+  // ANALOG_MULTIPLIER(2))) >> 4 = raw/32). The PWM targets land at raw/32 =
+  // 0/23/46/69/92/115, so the boundaries are the midpoints between them.
+  #define DEFAULT_6POS_CALIB          {11, 34, 57, 80, 103}
+  #define DEFAULT_6POS_IDX            6
+#elif defined(RADIO_BOXER)
   #define DEFAULT_6POS_CALIB          {5, 13, 22, 31, 40}
   #define DEFAULT_6POS_IDX            6
 #endif
