@@ -1759,7 +1759,37 @@ int cliResetGT911(const char** argv)
 }
 #endif
 
+// Lightweight, always-available analog dump (full `print adc` lives behind
+// DEBUG). Prints raw ADC counts for every input so the 6POS line on PA5 can
+// be checked in the field over the USB-VCP CLI.
+static int cliAdc(const char ** argv)
+{
+  (void)argv;
+  for (int i = 0; i < adcGetMaxInputs(ADC_INPUT_ALL); i++) {
+    cliSerialPrint("adc[%d] = %04X", i, getAnalogValue(i));
+  }
+  return 0;
+}
+
+// Dump the stored multipos (6POS) calibration so it can be checked over the
+// USB-VCP CLI: count + step boundaries (raw ADC / 16 scale).
+static int cliCalib(const char ** argv)
+{
+  (void)argv;
+  uint8_t off = adcGetInputOffset(ADC_INPUT_FLEX);
+  uint8_t n = adcGetMaxInputs(ADC_INPUT_FLEX);
+  for (uint8_t i = 0; i < n; i++) {
+    if (!IS_POT_MULTIPOS(i)) continue;
+    StepsCalibData* c = (StepsCalibData*)&g_eeGeneral.calib[i + off];
+    cliSerialPrint("multipos[%d] count=%d steps=%d,%d,%d,%d,%d", i, c->count,
+                   c->steps[0], c->steps[1], c->steps[2], c->steps[3], c->steps[4]);
+  }
+  return 0;
+}
+
 const CliCommand cliCommands[] = {
+  { "adc", cliAdc, "" },
+  { "calib", cliCalib, "" },
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
   { "ls", cliLs, "<directory>" },
   { "read", cliRead, "<filename>" },
