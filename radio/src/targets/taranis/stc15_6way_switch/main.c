@@ -20,14 +20,16 @@
  *    6   VCC        PWR   3.3V
  *    7   P5.5       OUT   LED6 driver (Mode 6, rightmost)
  *    8   GND        PWR   ground
- *    9   P3.0       OUT   PWM — analog out -> R115+C111 -> R114+C110 -> PA5
+ *    9   P3.0       IN    RXD / ISP (NC3 pin1) — NOT used at runtime
  *   10   P3.1       IN    SW (Mode 6 button, active low)
  *   11   P3.2       IN    SW (Mode 5 button, active low)
  *   12   P3.3       IN    SW (Mode 4 button)
  *   13   P3.6       IN    SW (Mode 3 button)
  *   14   P3.7       IN    SW (Mode 2 button)
  *   15   P1.0       IN    SW (Mode 1 button)
- *   16   P1.1       —     unused
+ *   16   P1.1       OUT   PWM — analog out -> R115+C111 -> R114+C110 -> PA5
+ *                          (P1.1 = CCP0-capable; this is the pin the schematic
+ *                           routes to PA5, NOT P3.0)
  *
  *   NOTE — LED5 on P5.4: P5.4 is the dedicated RST pin by default.
  *   To drive LED5, the ISP option "reset pin as GPIO" must be set
@@ -38,7 +40,7 @@
  * ---------------------------------------------------------------
  * Analog output:
  *
- *   P3.0 generates software PWM at ~1 kHz.
+ *   P1.1 generates software PWM at ~1 kHz.
  *   Two-stage RC LPF (R=10K, C=100nF, fc=159 Hz per stage)
  *   smooths it to a DC voltage read by STM32 PA5 (ADC1_IN5).
  *
@@ -110,8 +112,13 @@ __sbit __at(0xC8 + 5) P5_5;
 #define LED5  P5_4   /* pin 5 — Mode 5 (requires RST pin disabled in ISP) */
 #define LED6  P5_5   /* pin 7 — Mode 6 */
 
-/* PWM analog output */
-#define PWM_OUT P3_0 /* pin 9  — RC filtered -> PA5 */
+/* PWM analog output.
+ * The schematic routes the 6-way analog encoding from P1.1 (pin 16, a
+ * CCP0-capable pin) through the R115/R114 + C111/C110 two-stage RC filter
+ * to STM32 PA5.  P3.0 (pin 9) is the RXD/ISP line on NC3 and carries no
+ * runtime signal — driving the PWM there (as earlier revisions did) left
+ * P1.1 floating at its weak pull-up, so PA5 sat at ~Vcc and never moved. */
+#define PWM_OUT P1_1 /* pin 16 — RC filtered -> PA5 */
 
 /* ================================================================
  * Constants
@@ -253,13 +260,13 @@ static void boot_animation(void)
  * ================================================================ */
 static void hw_init(void)
 {
-    /* P1 [5:2] push-pull (LED1..LED4), P1.0 quasi-bidir (BTN1). */
-    P1M1 &= ~0x3C;
-    P1M0 |=  0x3C;
+    /* P1.1 push-pull (PWM analog out), P1[5:2] push-pull (LED1..LED4),
+     * P1.0 quasi-bidir (BTN1).  0x3E = P1.1..P1.5. */
+    P1M1 &= ~0x3E;
+    P1M0 |=  0x3E;
 
-    /* P3.0 push-pull (PWM); P3.1/P3.2/P3.3/P3.6/P3.7 quasi-bidir (BTN6/5/4/3/2). */
-    P3M1 &= ~0x01;
-    P3M0 |=  0x01;
+    /* P3.1/P3.2/P3.3/P3.6/P3.7 quasi-bidir (BTN6/5/4/3/2).
+     * P3.0 is RXD/ISP (NC3) — leave as default quasi-bidir input, never driven. */
     P3M1 &= ~0xCE;
     P3M0 &= ~0xCE;
 
